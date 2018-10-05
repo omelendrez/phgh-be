@@ -1,17 +1,22 @@
 {
   "name": "phgh-be",
   "version": "1.0.0",
-  "description": "",
   "main": "server.js",
   "dependencies": {
-    "express": "^4.16.3"
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "morgan": "^1.9.1",
+    "pg": "^7.5.0",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^4.39.0"
   },
   "devDependencies": {
-    "eslint": "^5.6.1"
+    "eslint": "^5.6.1",
+    "nodemon": "^1.18.4"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start:dev": "nodemon ./bin/www",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -22,5 +27,7 @@
   "bugs": {
     "url": "https://github.com/omelendrez/phgh-be/issues"
   },
-  "homepage": "https://github.com/omelendrez/phgh-be#readme"
+  "homepage": "https://github.com/omelendrez/phgh-be#readme",
+  "keywords": [],
+  "description": ""
 }
