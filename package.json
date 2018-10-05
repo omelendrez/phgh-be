@@ -8,11 +8,11 @@
     "morgan": "^1.9.1",
     "pg": "^7.5.0",
     "pg-hstore": "^2.3.2",
-    "sequelize": "^4.39.0"
+    "sequelize": "^4.39.0",
+    "nodemon": "^1.18.4"
   },
   "devDependencies": {
     "eslint": "^5.6.1",
-    "nodemon": "^1.18.4"
   },
   "scripts": {
     "start:dev": "nodemon ./bin/www",
