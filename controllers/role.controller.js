@@ -24,7 +24,7 @@ module.exports.create = create
 
 const getAll = async function (req, res) {
     let user = req.user
-    let err, roles
+    let err, roles;
 
     [err, roles] = await to(user.getRoles({ include: [{ association: Role.Users }] }))
 
