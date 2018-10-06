@@ -27,7 +27,7 @@ module.exports = {
             "single"
         ],
         "semi": [
-            "error",
+            "warn",
             "never"
         ]
     }
