@@ -31,7 +31,7 @@ const createUser = async (userInfo) => {
         auth_info.method = 'email'
         userInfo.email = unique_key;
         [err, user] = await to(User.create(userInfo))
-        if (err) TE('user already exists with that email')
+        if (err) TE('User already exists with that email')
         return user
 
     } else if (validator.isMobilePhone(unique_key, 'any')) { // checks if only phone number was sent
@@ -39,7 +39,7 @@ const createUser = async (userInfo) => {
         userInfo.phone = unique_key;
 
         [err, user] = await to(User.create(userInfo))
-        if (err) TE('user already exists with that phone number')
+        if (err) TE('User already exists with that phone number')
 
         return user
     } else {
@@ -54,7 +54,7 @@ const authUser = async function (userInfo) { // returns token
     auth_info.status = 'login'
     unique_key = getUniqueKeyFromBody(userInfo)
 
-    if (!unique_key) TE('Please enter an email or phone number to login')
+    if (!unique_key) TE('Please enter an email to login')
 
     if (!userInfo.password) TE('Please enter a password to login')
 
@@ -72,10 +72,10 @@ const authUser = async function (userInfo) { // returns token
         if (err) TE(err.message)
 
     } else {
-        TE('A valid email or phone number was not entered')
+        TE('Please provide a valid email')
     }
 
-    if (!user) TE('Not registered');
+    if (!user) TE('This email address is not registered');
 
     [err, user] = await to(user.comparePassword(userInfo.password))
 
