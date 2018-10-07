@@ -1,5 +1,6 @@
 const authService = require('../services/auth.service')
 const { to, ReE, ReS } = require('../services/util.service')
+const { User } = require('../models')
 
 const create = async function (req, res) {
     const body = req.body
@@ -25,6 +26,17 @@ const get = async function (req, res) {
     return ReS(res, { user: user.toWeb() })
 }
 module.exports.get = get
+
+const getAll = async function (req, res) {
+    let err, user
+    [err, user] = await to(User.findAndCountAll())
+    if (err) {
+        if (err.message == 'Users request error') err = 'Table users could not be queried'
+        return ReE(res, err)
+    }
+    return ReS(res, { users: user.rows })
+}
+module.exports.getAll = getAll
 
 const update = async function (req, res) {
     let err, user, data
