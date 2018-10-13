@@ -5,8 +5,6 @@ const UserController = require('../controllers/user.controller')
 const RoleController = require('../controllers/role.controller')
 const HomeController = require('../controllers/home.controller')
 
-const custom = require('./../middleware/custom')
-
 const passport = require('passport')
 const path = require('path')
 

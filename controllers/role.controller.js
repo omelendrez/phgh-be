@@ -1,5 +1,5 @@
 const { Role } = require('../models')
-const { to, ReE, ReS } = require('../services/util.service')
+const { ReE, ReS } = require('../services/util.service')
 
 const create = async function (req, res) {
     const data = req.body
