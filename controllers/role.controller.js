@@ -51,6 +51,23 @@ const getAll = (req, res) => {
 }
 module.exports.getAll = getAll
 
+const getUserRoles = (req, res) => {
+
+    const query = 'SELECT `UserId`, `RoleId` FROM `UserRoles` AS `UserRole` WHERE `UserId` = ' + req.params.id + ';'
+    const result = { success: true }
+    UserRole
+        .sequelize
+        .query(query)
+        .then(data => {
+            Object.assign(result, { userRoles: data[0] })
+            res.json(result)
+        })
+        .catch(err => {
+            return ReE(res, err)
+        })
+}
+module.exports.getUserRoles = getUserRoles
+
 const get = function (req, res) {
     let role = req.role
     return ReS(res, { role: role.toWeb() })
