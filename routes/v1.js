@@ -27,6 +27,7 @@ router.get('/roles', passport.authenticate('jwt', { session: false }), RoleContr
 router.put('/roles', passport.authenticate('jwt', { session: false }), RoleController.update)
 
 router.post('/userroles', passport.authenticate('jwt', { session: false }), RoleController.createUserRole)
+router.get('/userroles/:id', passport.authenticate('jwt', { session: false }), RoleController.getUserRoles)
 
 router.get('/dash', passport.authenticate('jwt', { session: false }), HomeController.Dashboard)
 
