@@ -50,7 +50,9 @@ const update = async function (req, res) {
         .then(user => user.update(
             {
                 first: data.first,
-                last: data.last
+                last: data.last,
+                phone: data.phone,
+                email: data.email
             })
         )
         .then(user => {
