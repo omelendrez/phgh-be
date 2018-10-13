@@ -28,25 +28,15 @@ const get = async function (req, res) {
 module.exports.get = get
 
 const getAll = (req, res) => {
-    const query = `SELECT JSON_OBJECT(
-        'id',User.id
-       ,'first',User.first
-       ,'last', User.last
-       ,'email', User.email
-       ,'phone', User.phone
-       ,'createdAt', User.createdAt
-       ,'updatedAt', User.updatedAt
-       ,'UserRoles'
-       ,(select CONCAT('[',
-          GROUP_CONCAT(
-              JSON_OBJECT(
-                  'id',id,
-                  'UserId',UserId,
-                  'RoleId',RoleId)),
-          ']')
-          FROM UserRoles AS UserRole
-          WHERE UserId = User.id)
-       ) AS User FROM Users AS User;`
+    const query = `SELECT
+        'id'
+       ,'first'
+       ,'last'
+       ,'email'
+       ,'phone'
+       ,'createdAt'
+       ,'updatedAt'
+       FROM Users;`
 
     const result = { success: true }
     User
