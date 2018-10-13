@@ -27,37 +27,35 @@ const get = async function (req, res) {
 }
 module.exports.get = get
 
-const getAll = async function (req, res) {
-    let err, user
-    [err, user] = await to(User.findAndCountAll({ attributes: { exclude: ['password'] } }))
-    if (err) {
-        if (err.message == 'Users request error') err = 'Table users could not be queried'
-        return ReE(res, err)
-    }
-    return ReS(res, { users: user.rows })
+const getAll = (req, res) => {
+    const query = 'SELECT * FROM `Users` AS `User`;'
+    const result = { success: true }
+    User
+        .sequelize
+        .query(query)
+        .then(data => {
+            Object.assign(result, { users: data[0] })
+            res.json(result)
+        })
+        .catch(err => {
+            return ReE(res, err)
+        })
 }
+
 module.exports.getAll = getAll
 
 const update = async function (req, res) {
     let data
     data = req.body
-
-    User.findOne({
-        where: {
-            id: data.id
-        }
-    })
-        .then(user => user.update(
-            {
-                first: data.first,
-                last: data.last,
-                phone: data.phone,
-                email: data.email
-            })
-        )
-        .then(user => {
-            return ReS(res, { user: user })
+    User.findOne({ where: { id: data.id } })
+        .then(user => user.update({
+            first: data.first,
+            last: data.last,
+            phone: data.phone,
+            email: data.email
         })
+        )
+        .then(user => ReS(res, { user: user }))
         .catch(() => ReE(res, 'Error occured trying to update user'))
 }
 module.exports.update = update
@@ -65,16 +63,9 @@ module.exports.update = update
 const remove = async function (req, res) {
     let data
     data = req.body
-
-    User.findOne({
-        where: {
-            id: data.id
-        }
-    })
+    User.findOne({ where: { id: data.id } })
         .then(user => user.destroy()
-            .then(user => {
-                return ReS(res, { user: user })
-            })
+            .then(user => ReS(res, { user: user }))
         )
         .catch(() => ReE(res, 'Error occured trying to delete user'))
 }
