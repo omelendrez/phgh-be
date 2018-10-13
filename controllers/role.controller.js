@@ -7,7 +7,7 @@ const create = async function (req, res) {
         .create(data)
         .then(data => {
             Object.assign(data, { roles: data[0] })
-            ReS(res, { message: 'Successfully created new role.', role: data.toWeb() }, 201)
+            ReS(res, { message: `Successfully created new role: "${data.name}"`, role: data.toWeb() }, 201)
         })
         .catch(err => {
             return ReE(res, err)
@@ -47,7 +47,9 @@ const update = async function (req, res) {
             name: data.name
         })
         )
-        .then(role => ReS(res, { role: role }))
+        .then(role =>
+            ReS(res, { message: `Role "${role.name}" updated successfully`, role: role.toWeb() }, 201)
+        )
         .catch(() => ReE(res, 'Error occured trying to update role'))
 }
 module.exports.update = update
@@ -57,7 +59,8 @@ const remove = async function (req, res) {
     data = req.body
     Role.findOne({ where: { id: data.id } })
         .then(role => role.destroy()
-            .then(role => ReS(res, { role: role }))
+            .then(role => ReS(res, { message: `Role "${role.name}" successfully deleted`, role: role.toWeb() }, 201)
+            )
         )
         .catch(() => ReE(res, 'Error occured trying to delete role'))
 }

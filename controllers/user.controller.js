@@ -15,7 +15,7 @@ const create = async function (req, res) {
         [err, user] = await to(authService.createUser(body))
 
         if (err) return ReE(res, err, 422)
-        return ReS(res, { message: 'Successfully created new user.', user: user.toWeb(), token: user.getJWT() }, 201)
+        return ReS(res, { message: `Successfully created new user: "${user.first} ${user.last}"`, user: user.toWeb(), token: user.getJWT() }, 201)
     }
 }
 module.exports.create = create
@@ -55,7 +55,7 @@ const update = async function (req, res) {
             email: data.email
         })
         )
-        .then(user => ReS(res, { user: user }))
+        .then(user => ReS(res, { message: `User "${user.first} ${user.last}" successfully updated`, user: user.toWeb() }, 201))
         .catch(() => ReE(res, 'Error occured trying to update user'))
 }
 module.exports.update = update
@@ -65,7 +65,7 @@ const remove = async function (req, res) {
     data = req.body
     User.findOne({ where: { id: data.id } })
         .then(user => user.destroy()
-            .then(user => ReS(res, { user: user }))
+            .then(user => ReS(res, { message: `User "${user.first} ${user.last}" deleted successfully`, user: user.toWeb() }))
         )
         .catch(() => ReE(res, 'Error occured trying to delete user'))
 }
