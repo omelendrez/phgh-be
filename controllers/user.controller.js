@@ -29,7 +29,7 @@ module.exports.get = get
 
 const getAll = async function (req, res) {
     let err, user
-    [err, user] = await to(User.findAndCountAll())
+    [err, user] = await to(User.findAndCountAll({ attributes: { exclude: ['password'] } }))
     if (err) {
         if (err.message == 'Users request error') err = 'Table users could not be queried'
         return ReE(res, err)
