@@ -28,7 +28,7 @@ const get = async function (req, res) {
 module.exports.get = get
 
 const getAll = (req, res) => {
-    const query = 'SELECT * FROM `Users` AS `User`;'
+    const query = 'SELECT `id`, `first`, `last`, `email`, `phone`, `createdAt`, `updatedAt` FROM `Users` AS `User`;'
     const result = { success: true }
     User
         .sequelize
