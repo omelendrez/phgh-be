@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
     var Model = sequelize.define('User', {
         first: DataTypes.STRING,
         last: DataTypes.STRING,
-        email: { type: DataTypes.STRING, allowNull: true, unique: true, validate: { isEmail: { msg: 'Phone number invalid.' } } },
+        email: { type: DataTypes.STRING, allowNull: true, unique: true, validate: { isEmail: { msg: 'Invalid email.' } } },
         phone: { type: DataTypes.STRING, allowNull: true, unique: true, validate: { len: { args: [7, 20], msg: 'Phone number invalid, too short.' }, isNumeric: { msg: 'not a valid phone number.' } } },
         password: DataTypes.STRING,
     })

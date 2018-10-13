@@ -19,8 +19,8 @@ router.get('/', function (req, res, next) {
 
 router.post('/users', UserController.create)
 router.get('/users', passport.authenticate('jwt', { session: false }), UserController.getAll)
-router.put('/users/:user_id', passport.authenticate('jwt', { session: false }), UserController.update)
-router.delete('/users/:user_id', passport.authenticate('jwt', { session: false }), UserController.remove)
+router.put('/users', passport.authenticate('jwt', { session: false }), UserController.update)
+router.delete('/users', passport.authenticate('jwt', { session: false }), UserController.remove)
 router.post('/users/login', UserController.login)
 
 router.post('/roles', passport.authenticate('jwt', { session: false }), RoleController.create)

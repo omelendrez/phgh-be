@@ -39,20 +39,45 @@ const getAll = async function (req, res) {
 module.exports.getAll = getAll
 
 const update = async function (req, res) {
-    let err, user, data
-    user = req.user
+    let data
     data = req.body
-    user.set(data);
 
-    [err, user] = await to(user.save())
-    if (err) {
-        if (err.message == 'Validation error') err = 'The email address or phone number is already in use'
-        return ReE(res, err)
-    }
-    return ReS(res, { message: 'Updated User: ' + user.email })
+    User.findOne({
+        where: {
+            id: data.id
+        }
+    })
+        .then(user => user.update(
+            {
+                first: data.first,
+                last: data.last
+            })
+        )
+        .then(user => {
+            return ReS(res, { user: user })
+        })
+        .catch(() => ReE(res, 'Error occured trying to update user'))
 }
 module.exports.update = update
 
+const remove = async function (req, res) {
+    let data
+    data = req.body
+
+    User.findOne({
+        where: {
+            id: data.id
+        }
+    })
+        .then(user => user.destroy()
+            .then(user => {
+                return ReS(res, { user: user })
+            })
+        )
+        .catch(() => ReE(res, 'Error occured trying to delete user'))
+}
+module.exports.remove = remove
+/*
 const remove = async function (req, res) {
     let user, err
     user = req.user;
@@ -63,7 +88,7 @@ const remove = async function (req, res) {
     return ReS(res, { message: 'Deleted User' }, 204)
 }
 module.exports.remove = remove
-
+*/
 const login = async function (req, res) {
     let err, user;
 

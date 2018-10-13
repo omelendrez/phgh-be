@@ -31,7 +31,7 @@ const createUser = async (userInfo) => {
         auth_info.method = 'email'
         userInfo.email = unique_key;
         [err, user] = await to(User.create(userInfo))
-        if (err) TE('User already exists with that email')
+        if (err) TE(err.message)
         return user
 
     } else if (validator.isMobilePhone(unique_key, 'any')) { // checks if only phone number was sent
