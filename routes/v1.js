@@ -15,18 +15,18 @@ router.get('/', function (req, res, next) {
   res.json({ status: 'success', message: 'Parcel Pending API', data: { 'version_number': 'v1.0.0' } })
 })
 
+router.post('/users/login', UserController.login)
+
 router.post('/users', UserController.create)
 router.get('/users', passport.authenticate('jwt', { session: false }), UserController.getAll)
 router.put('/users', passport.authenticate('jwt', { session: false }), UserController.update)
 router.delete('/users', passport.authenticate('jwt', { session: false }), UserController.remove)
-router.post('/users/login', UserController.login)
 
 router.post('/roles', passport.authenticate('jwt', { session: false }), RoleController.create)
 router.get('/roles', passport.authenticate('jwt', { session: false }), RoleController.getAll)
-
-router.get('/roles', passport.authenticate('jwt', { session: false }), RoleController.get)
 router.put('/roles', passport.authenticate('jwt', { session: false }), RoleController.update)
-router.delete('/roles', passport.authenticate('jwt', { session: false }), RoleController.remove)
+
+router.post('/userroles', passport.authenticate('jwt', { session: false }), RoleController.createUserRole)
 
 router.get('/dash', passport.authenticate('jwt', { session: false }), HomeController.Dashboard)
 

@@ -28,13 +28,34 @@ const get = async function (req, res) {
 module.exports.get = get
 
 const getAll = (req, res) => {
-    const query = 'SELECT `id`, `first`, `last`, `email`, `phone`, `createdAt`, `updatedAt` FROM `Users` AS `User`;'
+    const query = `SELECT JSON_OBJECT(
+        'id',User.id
+       ,'first',User.first
+       ,'last', User.last
+       ,'email', User.email
+       ,'phone', User.phone
+       ,'createdAt', User.createdAt
+       ,'updatedAt', User.updatedAt
+       ,'UserRoles'
+       ,(select CAST(CONCAT('[',
+          GROUP_CONCAT(
+              JSON_OBJECT(
+                  'id',id,
+                  'UserId',UserId,
+                  'RoleId',RoleId)),
+          ']') AS JSON)
+          FROM UserRoles AS UserRole
+          WHERE UserId = User.id)
+       ) AS User FROM Users AS User;`
+
     const result = { success: true }
     User
         .sequelize
         .query(query)
         .then(data => {
-            Object.assign(result, { users: data[0] })
+            const results = []
+            data[0].map(row => results.push(row.User))
+            Object.assign(result, { users: results })
             res.json(result)
         })
         .catch(err => {
