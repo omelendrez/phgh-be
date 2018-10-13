@@ -37,13 +37,13 @@ const getAll = (req, res) => {
        ,'createdAt', User.createdAt
        ,'updatedAt', User.updatedAt
        ,'UserRoles'
-       ,(select CAST(CONCAT('[',
+       ,(select CONCAT('[',
           GROUP_CONCAT(
               JSON_OBJECT(
                   'id',id,
                   'UserId',UserId,
                   'RoleId',RoleId)),
-          ']') AS JSON)
+          ']')
           FROM UserRoles AS UserRole
           WHERE UserId = User.id)
        ) AS User FROM Users AS User;`
