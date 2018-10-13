@@ -23,6 +23,18 @@ const create = async function (req, res) {
 module.exports.create = create
 
 const getAll = async function (req, res) {
+    let err, role
+    [err, role] = await to(Role.findAndCountAll())
+    if (err) {
+        if (err.message == 'Roles request error') err = 'Table roles could not be queried'
+        return ReE(res, err)
+    }
+    return ReS(res, { roles: role.rows })
+}
+module.exports.getAll = getAll
+
+/*
+const getAll = async function (req, res) {
     let user = req.user
     let err, roles;
 
@@ -47,7 +59,7 @@ const getAll = async function (req, res) {
     return ReS(res, { roles: roles_json })
 }
 module.exports.getAll = getAll
-
+*/
 const get = function (req, res) {
     let role = req.role
 
