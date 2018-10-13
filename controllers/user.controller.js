@@ -28,24 +28,14 @@ const get = async function (req, res) {
 module.exports.get = get
 
 const getAll = (req, res) => {
-    const query = `SELECT
-        'id'
-       ,'first'
-       ,'last'
-       ,'email'
-       ,'phone'
-       ,'createdAt'
-       ,'updatedAt'
-       FROM Users;`
+    const query = 'SELECT `id`, `first`,`last`,`email`,`phone`,`createdAt`,`updatedAt`FROM Users;'
 
     const result = { success: true }
     User
         .sequelize
         .query(query)
         .then(data => {
-            const results = []
-            data[0].map(row => results.push(row.User))
-            Object.assign(result, { users: results })
+            Object.assign(result, { users: data[0] })
             res.json(result)
         })
         .catch(err => {
