@@ -15,7 +15,7 @@ const create = async function (req, res) {
         [err, user] = await to(authService.createUser(body))
 
         if (err) return ReE(res, err, 422)
-        return ReS(res, { message: 'Successfully created new user.', user: user.toWeb(), token: user.getJWT() }, 201)
+        return ReS(res, { message: `Successfully created new user: "${user.first} ${user.last}"`, user: user.toWeb(), token: user.getJWT() }, 201)
     }
 }
 module.exports.create = create
@@ -27,37 +27,35 @@ const get = async function (req, res) {
 }
 module.exports.get = get
 
-const getAll = async function (req, res) {
-    let err, user
-    [err, user] = await to(User.findAndCountAll({ attributes: { exclude: ['password'] } }))
-    if (err) {
-        if (err.message == 'Users request error') err = 'Table users could not be queried'
-        return ReE(res, err)
-    }
-    return ReS(res, { users: user.rows })
+const getAll = (req, res) => {
+    const query = 'SELECT * FROM `Users` AS `User`;'
+    const result = { success: true }
+    User
+        .sequelize
+        .query(query)
+        .then(data => {
+            Object.assign(result, { users: data[0] })
+            res.json(result)
+        })
+        .catch(err => {
+            return ReE(res, err)
+        })
 }
+
 module.exports.getAll = getAll
 
 const update = async function (req, res) {
     let data
     data = req.body
-
-    User.findOne({
-        where: {
-            id: data.id
-        }
-    })
-        .then(user => user.update(
-            {
-                first: data.first,
-                last: data.last,
-                phone: data.phone,
-                email: data.email
-            })
-        )
-        .then(user => {
-            return ReS(res, { user: user })
+    User.findOne({ where: { id: data.id } })
+        .then(user => user.update({
+            first: data.first,
+            last: data.last,
+            phone: data.phone,
+            email: data.email
         })
+        )
+        .then(user => ReS(res, { message: `User "${user.first} ${user.last}" successfully updated`, user: user.toWeb() }, 201))
         .catch(() => ReE(res, 'Error occured trying to update user'))
 }
 module.exports.update = update
@@ -65,16 +63,9 @@ module.exports.update = update
 const remove = async function (req, res) {
     let data
     data = req.body
-
-    User.findOne({
-        where: {
-            id: data.id
-        }
-    })
+    User.findOne({ where: { id: data.id } })
         .then(user => user.destroy()
-            .then(user => {
-                return ReS(res, { user: user })
-            })
+            .then(user => ReS(res, { message: `User "${user.first} ${user.last}" deleted successfully`, user: user.toWeb() }))
         )
         .catch(() => ReE(res, 'Error occured trying to delete user'))
 }
@@ -97,6 +88,6 @@ const login = async function (req, res) {
     [err, user] = await to(authService.authUser(req.body))
     if (err) return ReE(res, err, 422)
 
-    return ReS(res, { token: user.getJWT(), user: user.toWeb() })
+    return ReS(res, { message: 'You have successfully signed in', token: user.getJWT(), user: user.toWeb() })
 }
 module.exports.login = login

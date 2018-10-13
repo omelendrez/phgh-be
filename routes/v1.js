@@ -5,8 +5,6 @@ const UserController = require('../controllers/user.controller')
 const RoleController = require('../controllers/role.controller')
 const HomeController = require('../controllers/home.controller')
 
-const custom = require('./../middleware/custom')
-
 const passport = require('passport')
 const path = require('path')
 
@@ -26,9 +24,9 @@ router.post('/users/login', UserController.login)
 router.post('/roles', passport.authenticate('jwt', { session: false }), RoleController.create)
 router.get('/roles', passport.authenticate('jwt', { session: false }), RoleController.getAll)
 
-router.get('/roles/:role_id', passport.authenticate('jwt', { session: false }), custom.role, RoleController.get)
-router.put('/roles/:role_id', passport.authenticate('jwt', { session: false }), custom.role, RoleController.update)
-router.delete('/roles/:role_id', passport.authenticate('jwt', { session: false }), custom.role, RoleController.remove)
+router.get('/roles', passport.authenticate('jwt', { session: false }), RoleController.get)
+router.put('/roles', passport.authenticate('jwt', { session: false }), RoleController.update)
+router.delete('/roles', passport.authenticate('jwt', { session: false }), RoleController.remove)
 
 router.get('/dash', passport.authenticate('jwt', { session: false }), HomeController.Dashboard)
 

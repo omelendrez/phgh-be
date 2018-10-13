@@ -1,65 +1,37 @@
 const { Role } = require('../models')
-const { to, ReE, ReS } = require('../services/util.service')
+const { ReE, ReS } = require('../services/util.service')
 
 const create = async function (req, res) {
-    let err, role
-    let user = req.user
-
-    let role_info = req.body;
-
-    [err, role] = await to(Role.create(role_info))
-    if (err) return ReE(res, err, 422)
-
-    role.addUser(user, { through: { status: 'started' } });
-
-    [err, role] = await to(role.save())
-    if (err) return ReE(res, err, 422)
-
-    let role_json = role.toWeb()
-    role_json.users = [{ user: user.id }]
-
-    return ReS(res, { role: role_json }, 201)
+    const data = req.body
+    Role
+        .create(data)
+        .then(data => {
+            Object.assign(data, { roles: data[0] })
+            ReS(res, { message: `Successfully created new role: "${data.name}"`, role: data.toWeb() }, 201)
+        })
+        .catch(err => {
+            return ReE(res, err)
+        })
 }
 module.exports.create = create
 
-const getAll = async function (req, res) {
-    let err, role
-    [err, role] = await to(Role.findAndCountAll())
-    if (err) {
-        if (err.message == 'Roles request error') err = 'Table roles could not be queried'
-        return ReE(res, err)
-    }
-    return ReS(res, { roles: role.rows })
+const getAll = (req, res) => {
+    const query = 'SELECT * FROM `Roles` AS `Role`;'
+    const result = { success: true }
+    Role
+        .sequelize
+        .query(query)
+        .then(data => {
+            Object.assign(result, { roles: data[0] })
+            res.json(result)
+        })
+        .catch(err => {
+            return ReE(res, err)
+        })
 }
+
 module.exports.getAll = getAll
 
-/*
-const getAll = async function (req, res) {
-    let user = req.user
-    let err, roles;
-
-    [err, roles] = await to(user.getRoles({ include: [{ association: Role.Users }] }))
-
-    let roles_json = []
-    for (let i in roles) {
-        let role = roles[i]
-        let users = role.Users
-        let role_info = role.toWeb()
-        let users_info = []
-        for (let i in users) {
-            let user = users[i]
-            // let user_info = user.toJSON();
-            users_info.push({ user: user.id })
-        }
-        role_info.users = users_info
-        roles_json.push(role_info)
-    }
-
-    console.log('c t', roles_json)
-    return ReS(res, { roles: roles_json })
-}
-module.exports.getAll = getAll
-*/
 const get = function (req, res) {
     let role = req.role
 
@@ -68,26 +40,28 @@ const get = function (req, res) {
 module.exports.get = get
 
 const update = async function (req, res) {
-    let err, role, data
-    role = req.role
+    let data
     data = req.body
-    role.set(data);
-
-    [err, role] = await to(role.save())
-    if (err) {
-        return ReE(res, err)
-    }
-    return ReS(res, { role: role.toWeb() })
+    Role.findOne({ where: { id: data.id } })
+        .then(role => role.update({
+            name: data.name
+        })
+        )
+        .then(role =>
+            ReS(res, { message: `Role "${role.name}" updated successfully`, role: role.toWeb() }, 201)
+        )
+        .catch(() => ReE(res, 'Error occured trying to update role'))
 }
 module.exports.update = update
 
 const remove = async function (req, res) {
-    let role, err
-    role = req.role;
-
-    [err, role] = await to(role.destroy())
-    if (err) return ReE(res, 'error occured trying to delete the role')
-
-    return ReS(res, { message: 'Deleted Role' }, 204)
+    let data
+    data = req.body
+    Role.findOne({ where: { id: data.id } })
+        .then(role => role.destroy()
+            .then(role => ReS(res, { message: `Role "${role.name}" successfully deleted`, role: role.toWeb() }, 201)
+            )
+        )
+        .catch(() => ReE(res, 'Error occured trying to delete role'))
 }
 module.exports.remove = remove
