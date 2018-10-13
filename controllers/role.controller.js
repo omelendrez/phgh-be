@@ -1,4 +1,5 @@
 const { Role } = require('../models')
+const { UserRole } = require('../models')
 const { ReE, ReS } = require('../services/util.service')
 
 const create = async function (req, res) {
@@ -15,8 +16,27 @@ const create = async function (req, res) {
 }
 module.exports.create = create
 
+const createUserRole = async function (req, res) {
+    const data = req.body
+    const UserId = data.UserId || data[0].UserId
+    UserRole
+        .destroy({ where: { UserId: UserId } })
+        .then(() => {
+            UserRole
+                .bulkCreate(data)
+                .then(data => {
+                    Object.assign(data, { userRoles: {} })
+                    ReS(res, { message: 'Successfully created new user role', roles: data.toWeb() }, 201)
+                })
+                .catch(err => ReE(res, 'Error occured trying to update user roles [Step 2]'))
+
+        })
+        .catch(err => ReE(res, 'Error occured trying to update user roles [Step 1]'))
+}
+module.exports.createUserRole = createUserRole
+
 const getAll = (req, res) => {
-    const query = 'SELECT * FROM `Roles` AS `Role`;'
+    const query = 'SELECT `id`, `name`, `createdAt`, `updatedAt` FROM `Roles` AS `Role`;'
     const result = { success: true }
     Role
         .sequelize
@@ -29,12 +49,10 @@ const getAll = (req, res) => {
             return ReE(res, err)
         })
 }
-
 module.exports.getAll = getAll
 
 const get = function (req, res) {
     let role = req.role
-
     return ReS(res, { role: role.toWeb() })
 }
 module.exports.get = get

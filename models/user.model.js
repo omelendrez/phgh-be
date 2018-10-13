@@ -14,10 +14,6 @@ module.exports = (sequelize, DataTypes) => {
         password: DataTypes.STRING,
     })
 
-    Model.associate = function (models) {
-        this.Roles = this.belongsToMany(models.Role, { through: 'UserRole' })
-    }
-
     Model.beforeSave(async (user, options) => {
         let err
         if (user.changed('password')) {
