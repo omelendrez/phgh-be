@@ -62,9 +62,7 @@ const update = async function (req, res) {
 module.exports.update = update
 
 const remove = async function (req, res) {
-    let data
-    data = req.body
-    User.findOne({ where: { id: data.id } })
+    User.findOne({ where: { id: req.params.id } })
         .then(user => user.destroy()
             .then(user => ReS(res, { message: `User "${user.first} ${user.last}" deleted successfully`, user: user.toWeb() }))
         )

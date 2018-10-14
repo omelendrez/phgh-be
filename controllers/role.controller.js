@@ -77,7 +77,7 @@ module.exports.get = get
 const update = async function (req, res) {
     let data
     data = req.body
-    Role.findOne({ where: { id: data.id } })
+    Role.findOne({ where: { id: req.params.id } })
         .then(role => role.update({
             name: data.name
         })
@@ -90,9 +90,7 @@ const update = async function (req, res) {
 module.exports.update = update
 
 const remove = async function (req, res) {
-    let data
-    data = req.body
-    Role.findOne({ where: { id: data.id } })
+    Role.findOne({ where: { id: req.params.id } })
         .then(role => role.destroy()
             .then(role => ReS(res, { message: `Role "${role.name}" successfully deleted`, role: role.toWeb() }, 201)
             )

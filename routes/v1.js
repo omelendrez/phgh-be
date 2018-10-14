@@ -19,12 +19,13 @@ router.post('/users/login', UserController.login)
 
 router.post('/users', UserController.create)
 router.get('/users', passport.authenticate('jwt', { session: false }), UserController.getAll)
-router.put('/users', passport.authenticate('jwt', { session: false }), UserController.update)
-router.delete('/users', passport.authenticate('jwt', { session: false }), UserController.remove)
+router.put('/users/:id', passport.authenticate('jwt', { session: false }), UserController.update)
+router.delete('/users/:id', passport.authenticate('jwt', { session: false }), UserController.remove)
 
 router.post('/roles', passport.authenticate('jwt', { session: false }), RoleController.create)
 router.get('/roles', passport.authenticate('jwt', { session: false }), RoleController.getAll)
-router.put('/roles', passport.authenticate('jwt', { session: false }), RoleController.update)
+router.put('/roles/:id', passport.authenticate('jwt', { session: false }), RoleController.update)
+router.delete('/roles/:id', passport.authenticate('jwt', { session: false }), RoleController.remove)
 
 router.post('/userroles', passport.authenticate('jwt', { session: false }), RoleController.createUserRole)
 router.get('/userroles/:id', passport.authenticate('jwt', { session: false }), RoleController.getUserRoles)
