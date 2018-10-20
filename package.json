@@ -2,7 +2,7 @@
   "name": "server",
   "version": "0.0.1",
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "nodemon ./bin/www"
   },
   "dependencies": {
     "await-to-js": "^2.0.1",
@@ -17,6 +17,7 @@
     "jade": "~1.11.0",
     "morgan": "^1.9.1",
     "mysql2": "^1.6.1",
+    "nodemon": "^1.18.4",
     "parse-error": "^0.2.0",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
