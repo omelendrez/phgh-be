@@ -4,6 +4,7 @@ const router = express.Router()
 const UserController = require('../controllers/user.controller')
 const RoleController = require('../controllers/role.controller')
 const HomeController = require('../controllers/home.controller')
+const ConfigController = require('../controllers/config.controller')
 
 const passport = require('passport')
 const path = require('path')
@@ -30,8 +31,13 @@ router.delete('/roles/:id', passport.authenticate('jwt', { session: false }), Ro
 router.post('/userroles', passport.authenticate('jwt', { session: false }), RoleController.createUserRole)
 router.get('/userroles/:id', passport.authenticate('jwt', { session: false }), RoleController.getUserRoles)
 
+router.get('/config', passport.authenticate('jwt', { session: false}), ConfigController.get)
+router.put('/config', passport.authenticate('jwt', { session: false }), ConfigController.update)
+
 router.get('/dash', passport.authenticate('jwt', { session: false }), HomeController.Dashboard)
 
 router.use('/docs/api.json', express.static(path.join(__dirname, '/../public/v1/documentation/api.json')))
 router.use('/docs', express.static(path.join(__dirname, '/../public/v1/documentation/dist')))
+
+
 module.exports = router
