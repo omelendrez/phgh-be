@@ -1,6 +1,7 @@
 const { Audit } = require('../models')
+const { ReE } = require('../services/util.service')
 
-const create = async function(data) {
+const create = async function (data) {
   const { userId, model, recordId, field, value } = data
   Audit.create(data)
 }
@@ -8,7 +9,7 @@ module.exports.create = create
 
 const getAll = (req, res) => {
   const query =
-    'SELECT `audits`.`id`, `audits`.`userId`, `audits`.`model`, `audits`.`recordId`, `audits`.`field`, `audits`.`value`, `audits`.`createdAt`, `audits`.`updatedAt` FROM `phgh`.`audits`; '
+    'SELECT `id`, `userId`, `model`, `recordId`, `field`, `value`, `createdAt`, `updatedAt` FROM `audits`; '
   const result = { success: true }
   Audit.sequelize
     .query(query)
