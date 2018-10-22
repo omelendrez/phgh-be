@@ -1,4 +1,5 @@
 const { Config } = require('../models')
+const { Audit } = require('../models')
 const { ReE, ReS } = require('../services/util.service')
 
 const get = (req, res) => {
@@ -30,17 +31,18 @@ const update = async function (req, res) {
     }
     Config.findOne({ where: { id: 1 } })
         .then(config => {
-            if (config.length < 1) {
-                Config
-                    .create({ appActive: 1 })
-                    .then(config => {
-                        config.update(data, field)
-                            .then(config => ReS(res, { message: 'Config updated successfully', config: config.toWeb() }, 201))
-                            .catch(() => ReE(res, 'Error occured trying to update configuration field'))
-                    })
-            }
             config.update(data, field)
-                .then(config => ReS(res, { message: 'Config updated successfully', config: config.toWeb() }, 201))
+                .then(config => {
+                  const audit = {
+                    userId: req.user.id,
+                    model: 'configs',
+                    recordId: config.id,
+                    field: fieldName,
+                    value: value.toString()
+                  }
+                  Audit.create(audit)
+                  ReS(res, { message: 'Config updated successfully', config: config.toWeb() }, 201)
+                })
                 .catch(() => ReE(res, 'Error occured trying to update configuration field'))
         })
 }

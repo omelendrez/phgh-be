@@ -1,8 +1,10 @@
 const authService = require('../services/auth.service')
+const { Audit } = require('../models')
 const { to, ReE, ReS } = require('../services/util.service')
 const { User } = require('../models')
 
 const create = async function (req, res) {
+
     const body = req.body
 
     if (!body.unique_key && !body.email && !body.phone) {
@@ -15,6 +17,16 @@ const create = async function (req, res) {
         [err, user] = await to(authService.createUser(body))
 
         if (err) return ReE(res, err, 422)
+
+        const audit = {
+          userId: req.user.id,
+          model: 'users',
+          recordId: user.id,
+          field: 'add',
+          value: `${user.first} ${user.last} (${user.email})`
+        }
+        Audit.create(audit)
+
         return ReS(res, { message: `Successfully created new user: "${user.first} ${user.last}"`, user: user.toWeb(), token: user.getJWT() }, 201)
     }
 }
@@ -53,7 +65,7 @@ const update = async function (req, res) {
             first: data.first,
             last: data.last,
             phone: data.phone,
-            email: data.email
+            email: `${user.first} ${user.last} (${user.email})`
         })
         )
         .then(user => ReS(res, { message: `User "${user.first} ${user.last}" successfully updated`, user: user.toWeb() }, 201))
@@ -64,7 +76,18 @@ module.exports.update = update
 const remove = async function (req, res) {
     User.findOne({ where: { id: req.params.id } })
         .then(user => user.destroy()
-            .then(user => ReS(res, { message: `User "${user.first} ${user.last}" deleted successfully`, user: user.toWeb() }))
+            .then(user => {
+              const audit = {
+                userId: req.user.id,
+                model: 'users',
+                recordId: user.id,
+                field: 'del',
+                value: `${user.first} ${user.last} (${user.email})`
+              }
+              Audit.create(audit)
+
+              ReS(res, { message: `User "${user.first} ${user.last}" deleted successfully`, user: user.toWeb() })
+            })
         )
         .catch(() => ReE(res, 'Error occured trying to delete user'))
 }

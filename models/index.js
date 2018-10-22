@@ -10,7 +10,8 @@ const sequelize = new Sequelize(CONFIG.db_name, CONFIG.db_user, CONFIG.db_passwo
   host: CONFIG.db_host,
   dialect: CONFIG.db_dialect,
   port: CONFIG.db_port,
-  operatorsAliases: false
+  operatorsAliases: false,
+  logging: false
 })
 
 fs.readdirSync(__dirname)

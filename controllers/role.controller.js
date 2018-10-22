@@ -1,4 +1,5 @@
 const { Role } = require('../models')
+const { Audit } = require('../models')
 const { UserRole } = require('../models')
 const { ReE, ReS } = require('../services/util.service')
 
@@ -8,6 +9,15 @@ const create = async function (req, res) {
         .create(data)
         .then(data => {
             Object.assign(data, { roles: data[0] })
+            const audit = {
+              userId: req.user.id,
+              model: 'roles',
+              recordId: data.id,
+              field: 'add',
+              value: data.name
+            }
+            Audit.create(audit)
+
             ReS(res, { message: `Successfully created new role: "${data.name}"`, role: data.toWeb() }, 201)
         })
         .catch(err => {
@@ -82,9 +92,17 @@ const update = async function (req, res) {
             name: data.name
         })
         )
-        .then(role =>
-            ReS(res, { message: `Role "${role.name}" updated successfully`, role: role.toWeb() }, 201)
-        )
+        .then(role => {
+          const audit = {
+            userId: req.user.id,
+            model: 'roles',
+            recordId: role.id,
+            field: 'upd',
+            value: role.name
+          }
+          Audit.create(audit)
+          ReS(res, { message: `Role "${role.name}" updated successfully`, role: role.toWeb() }, 201)
+        })
         .catch(() => ReE(res, 'Error occured trying to update role'))
 }
 module.exports.update = update
@@ -92,8 +110,17 @@ module.exports.update = update
 const remove = async function (req, res) {
     Role.findOne({ where: { id: req.params.id } })
         .then(role => role.destroy()
-            .then(role => ReS(res, { message: `Role "${role.name}" successfully deleted`, role: role.toWeb() }, 201)
-            )
+            .then(role => {
+              const audit = {
+                userId: req.user.id,
+                model: 'roles',
+                recordId: role.id,
+                field: 'del',
+                value: role.name
+              }
+              Audit.create(audit)
+                ReS(res, { message: `Role "${role.name}" successfully deleted`, role: role.toWeb() }, 201)
+            })
         )
         .catch(() => ReE(res, 'Error occured trying to delete role'))
 }
