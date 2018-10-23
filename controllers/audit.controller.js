@@ -2,7 +2,6 @@ const { Audit } = require('../models')
 const { ReE } = require('../services/util.service')
 
 const create = async function (data) {
-  const { userId, model, recordId, field, value } = data
   Audit.create(data)
 }
 module.exports.create = create
