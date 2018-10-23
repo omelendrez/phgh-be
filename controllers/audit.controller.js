@@ -9,7 +9,7 @@ module.exports.create = create
 
 const getAll = (req, res) => {
   const query =
-    'SELECT `id`, `userId`, `model`, `recordId`, `field`, `value`, `createdAt`, `updatedAt` FROM `audits`; '
+    'SELECT `id`, `userId`, `model`, `recordId`, `field`, `value`, `createdAt`, `updatedAt` FROM `audits` ORDER BY id DESC; '
   const result = { success: true }
   Audit.sequelize
     .query(query)
