@@ -28,7 +28,6 @@ const update = async function (req, res) {
 module.exports.update = update
 
 const remove = async function (req, res) {
-  const data = req.body
   Holiday.findOne({ where: { id: req.params.id } })
     .then(holiday => holiday.destroy())
     .then(holiday => {
