@@ -6,6 +6,7 @@ const RoleController = require('../controllers/role.controller')
 const HomeController = require('../controllers/home.controller')
 const ConfigController = require('../controllers/config.controller')
 const AuditController = require('../controllers/audit.controller')
+const HolidayController = require('../controllers/holiday.controller')
 
 const passport = require('passport')
 const path = require('path')
@@ -32,10 +33,15 @@ router.delete('/roles/:id', passport.authenticate('jwt', { session: false }), Ro
 router.post('/userroles', passport.authenticate('jwt', { session: false }), RoleController.createUserRole)
 router.get('/userroles/:id', passport.authenticate('jwt', { session: false }), RoleController.getUserRoles)
 
-router.get('/config', passport.authenticate('jwt', { session: false}), ConfigController.get)
+router.get('/config', passport.authenticate('jwt', { session: false }), ConfigController.get)
 router.put('/config', passport.authenticate('jwt', { session: false }), ConfigController.update)
 
 router.get('/audit', passport.authenticate('jwt', { session: false }), AuditController.getAll)
+
+router.post('/holiday', passport.authenticate('jwt', { session: false }), HolidayController.create)
+router.put('/holiday/:id', passport.authenticate('jwt', { session: false }), HolidayController.update)
+router.get('/holiday', passport.authenticate('jwt', { session: false }), HolidayController.getAll)
+router.delete('/holiday/:id', passport.authenticate('jwt', { session: false }), HolidayController.remove)
 
 router.get('/dash', passport.authenticate('jwt', { session: false }), HomeController.Dashboard)
 
