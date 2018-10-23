@@ -1,6 +1,6 @@
 require('dotenv').config()
 
-let CONFIG = {}
+const CONFIG = {}
 
 CONFIG.app = process.env.APP || 'dev'
 CONFIG.port = process.env.PORT || '3000'
