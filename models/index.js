@@ -4,7 +4,7 @@ const path = require('path')
 const Sequelize = require('sequelize')
 const basename = path.basename(__filename)
 const db = {}
-const CONFIG = require('../config/config')
+const CONFIG = require('../config')
 
 const sequelize = new Sequelize(CONFIG.db_name, CONFIG.db_user, CONFIG.db_password, {
   host: CONFIG.db_host,
