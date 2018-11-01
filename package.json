@@ -1,6 +1,9 @@
 {
   "name": "phgh-server",
   "version": "1.0.0",
+  "engines": {
+    "node": "8.11.2"
+  },
   "scripts": {
     "start": "nodemon ./bin/www"
   },
