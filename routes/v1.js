@@ -8,8 +8,9 @@ const ConfigController = require('../controllers/config.controller')
 const AuditController = require('../controllers/audit.controller')
 const HolidayController = require('../controllers/holiday.controller')
 
+const ParticipantController = require('../controllers/participant.controller')
+
 const passport = require('passport')
-const path = require('path')
 
 require('./../middleware/passport')(passport)
 
@@ -45,8 +46,7 @@ router.delete('/holiday/:id', passport.authenticate('jwt', { session: false }), 
 
 router.get('/dash', passport.authenticate('jwt', { session: false }), HomeController.Dashboard)
 
-router.use('/docs/api.json', express.static(path.join(__dirname, '/../public/v1/documentation/api.json')))
-router.use('/docs', express.static(path.join(__dirname, '/../public/v1/documentation/dist')))
 
+router.post('/participants/login', ParticipantController.login)
 
 module.exports = router
