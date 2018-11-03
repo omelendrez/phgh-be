@@ -49,7 +49,6 @@ const createParticipant = async (participantInfo) => {
   unique_key = participantInfo.username
   if (validator.isAlphanumeric(unique_key)) {
     auth_info.method = 'username'
-    participantInfo.username = unique_key;
     [err, participant] = await to(Participant.create(participantInfo))
     if (err) TE(err.message)
     return participant
@@ -60,7 +59,6 @@ const createParticipant = async (participantInfo) => {
   unique_key = participantInfo.email
   if (validator.isEmail(unique_key)) {
     auth_info.method = 'email'
-    participantInfo.email = unique_key;
     [err, participant] = await to(Participant.create(participantInfo))
     if (err) TE(err.message)
     return participant
@@ -71,7 +69,6 @@ const createParticipant = async (participantInfo) => {
   unique_key = participantInfo.phone
   if (validator.isMobilePhone(unique_key, 'any')) { // checks if only phone number was sent
     auth_info.method = 'phone'
-    participantInfo.phone = unique_key;
     [err, participant] = await to(Participant.create(participantInfo))
     if (err) TE('Participant already exists with that phone number')
     return participant
