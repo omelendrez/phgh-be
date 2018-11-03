@@ -5,8 +5,8 @@ const { Participant } = require('../models')
 
 const create = async function (req, res) {
   const body = req.body
-  if (!body.unique_key && !body.phone && !body.phone) {
-    return ReE(res, 'Please enter an phone or phone number to register.')
+  if (!body.unique_key && !body.email && !body.phone) {
+    return ReE(res, 'Please enter a username or phone number to register.')
   } else if (!body.password) {
     return ReE(res, 'Please enter a password to register.')
   } else {
