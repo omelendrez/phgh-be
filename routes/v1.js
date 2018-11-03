@@ -20,7 +20,6 @@ router.get('/', function (req, res, next) {
 })
 
 router.post('/users/login', UserController.login)
-
 router.post('/users', passport.authenticate('jwt', { session: false }), UserController.create)
 router.get('/users', passport.authenticate('jwt', { session: false }), UserController.getAll)
 router.put('/users/:id', passport.authenticate('jwt', { session: false }), UserController.update)
@@ -46,7 +45,7 @@ router.delete('/holiday/:id', passport.authenticate('jwt', { session: false }), 
 
 router.get('/dash', passport.authenticate('jwt', { session: false }), HomeController.Dashboard)
 
-
 router.post('/participants/login', ParticipantController.login)
+router.post('/participants', ParticipantController.create)
 
 module.exports = router
