@@ -10,21 +10,30 @@ module.exports = (sequelize, DataTypes) => {
     username: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
+      unique: {
+        args: 'uniqueKey',
+        msg: 'Username already registered'
+      },
       validate: {
-        len: { args: [7, 20], msg: 'User name invalid, too short.' },
+        len: { args: [8, 30], msg: 'User name invalid, it must be between 8 to 30 characters.' },
       }
     },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
+      unique: {
+        args: 'uniqueKey',
+        msg: 'Email arlaready registered.'
+      },
       validate: { isEmail: { msg: 'Invalid email.' } }
     },
     phone: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
+      unique: {
+        args: 'uniqueKey',
+        msg: 'Phone already registered.'
+      },
       validate: {
         len: { args: [7, 20], msg: 'Phone number invalid, too short.' },
         isNumeric: { msg: 'not a valid phone number.' }

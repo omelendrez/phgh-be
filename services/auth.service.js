@@ -41,7 +41,47 @@ const createUser = async (userInfo) => {
 }
 module.exports.createUser = createUser
 
-const authUser = async function (userInfo) { // returns token
+const createParticipant = async (participantInfo) => {
+  let unique_key, auth_info, err, participant
+  auth_info = {}
+  auth_info.status = 'create'
+
+  unique_key = participantInfo.username
+  if (validator.isAlphanumeric(unique_key)) {
+    auth_info.method = 'username';
+    [err, participant] = await to(Participant.create(participantInfo))
+    if (err) TE(err.message)
+    return participant
+  } else {
+    TE('A valid username was not entered.')
+  }
+
+  unique_key = participantInfo.email
+  if (validator.isEmail(unique_key)) {
+    auth_info.method = 'email';
+    [err, participant] = await to(Participant.create(participantInfo))
+    if (err) TE(err.message)
+    return participant
+  } else {
+    TE('A valid email was not entered.')
+  }
+
+  unique_key = participantInfo.phone
+  if (validator.isMobilePhone(unique_key, 'any')) { // checks if only phone number was sent
+    auth_info.method = 'phone';
+    [err, participant] = await to(Participant.create(participantInfo))
+    if (err) TE('Participant already exists with that phone number')
+    return participant
+  } else {
+    TE('A valid phone number was not entered.')
+  }
+
+  if (!unique_key) TE('A username, email or mobile was not entered.')
+
+}
+module.exports.createParticipant = createParticipant
+
+const authUser = async function (userInfo) {
   let unique_key, err
   let auth_info = {}
   auth_info.status = 'login'
@@ -67,15 +107,15 @@ const authUser = async function (userInfo) { // returns token
 }
 module.exports.authUser = authUser
 
-const authParticipant = async function (ParticipantInfo) { // returns token
+const authParticipant = async function (participantInfo) {
   let unique_key, err, participant
   let auth_info = {}
   auth_info.status = 'login'
 
-  if (!ParticipantInfo.password) TE('Please enter a password to login')
+  if (!participantInfo.password) TE('Please enter a password to login')
 
-  if (ParticipantInfo.username) {
-    unique_key = ParticipantInfo.username
+  if (participantInfo.username) {
+    unique_key = participantInfo.username
     auth_info.method = 'username'
     if (validator.isAlphanumeric(unique_key)) {
       [err, participant] = await to(Participant.findOne({ where: { username: unique_key } }))
@@ -85,8 +125,8 @@ const authParticipant = async function (ParticipantInfo) { // returns token
     }
   }
 
-  if (ParticipantInfo.email) {
-    unique_key = ParticipantInfo.email
+  if (participantInfo.email) {
+    unique_key = participantInfo.email
     auth_info.method = 'email'
     if (validator.isEmail(unique_key)) {
       [err, participant] = await to(Participant.findOne({ where: { email: unique_key } }))
@@ -96,8 +136,8 @@ const authParticipant = async function (ParticipantInfo) { // returns token
     }
   }
 
-  if (ParticipantInfo.phone) {
-    unique_key = ParticipantInfo.phone
+  if (participantInfo.phone) {
+    unique_key = participantInfo.phone
     auth_info.method = 'phone'
     if (validator.isMobilePhone(unique_key, 'any')) {
       [err, participant] = await to(Participant.findOne({ where: { phone: unique_key } }))
@@ -108,7 +148,7 @@ const authParticipant = async function (ParticipantInfo) { // returns token
   }
   if (!unique_key) TE('Please enter username,  email or mobile to login')
   if (!participant) TE(`This ${auth_info.method} is not registered`);
-  [err, participant] = await to(participant.comparePassword(ParticipantInfo.password))
+  [err, participant] = await to(participant.comparePassword(participantInfo.password))
   if (err) TE(err.message)
   return participant
 }

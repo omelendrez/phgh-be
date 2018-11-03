@@ -1,26 +1,17 @@
 const authService = require('../services/auth.service')
-const { Audit } = require('../models')
 const { to, ReE, ReS } = require('../services/util.service')
 const { Participant } = require('../models')
 
 const create = async function (req, res) {
   const body = req.body
   if (!body.unique_key && !body.email && !body.phone) {
-    return ReE(res, 'Please enter a username or phone number to register.')
+    return ReE(res, 'Please enter a username, email or phone number to register.')
   } else if (!body.password) {
     return ReE(res, 'Please enter a password to register.')
   } else {
     let err, participant;
-    [err, participant] = await to(authService.createUser(body))
+    [err, participant] = await to(authService.createParticipant(body))
     if (err) return ReE(res, err, 422)
-    const audit = {
-      participantId: req.participant.id,
-      model: 'participants',
-      recordId: participant.id,
-      field: 'add',
-      value: `${participant.username} ${participant.email} (${participant.phone})`
-    }
-    Audit.create(audit)
     return ReS(res, { message: `Successfully created new participant: "${participant.username} ${participant.email}"`, participant: participant.toWeb(), token: participant.getJWT() }, 201)
   }
 }
@@ -46,14 +37,6 @@ const remove = async function (req, res) {
   Participant.findOne({ where: { id: req.params.id } })
     .then(participant => participant.destroy()
       .then(participant => {
-        const audit = {
-          participantId: req.participant.id,
-          model: 'participants',
-          recordId: participant.id,
-          field: 'del',
-          value: `${participant.username} ${participant.email} (${participant.phone})`
-        }
-        Audit.create(audit)
         ReS(res, { message: `Participant "${participant.username} ${participant.email}" deleted successfully`, participant: participant.toWeb() })
       })
     )
@@ -65,6 +48,7 @@ const login = async function (req, res) {
   let err, participant;
   [err, participant] = await to(authService.authParticipant(req.body))
   if (err) return ReE(res, err, 422)
-  return ReS(res, { message: 'You have successfully signed in', token: participant.getJWT(), participant: participant.toWeb() })
+  if(!participant.emailVerified && !participant.phoneVerified ) return ReE(res, {message: 'Your account has been created but your email address and phone number have not been verified yet'}, 422)
+  return ReS(res, { message: 'You have successfully signed in', token: participant.getJWT(), user: participant.toWeb() })
 }
 module.exports.login = login
