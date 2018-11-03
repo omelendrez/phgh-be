@@ -48,6 +48,7 @@ const login = async function (req, res) {
   let err, participant;
   [err, participant] = await to(authService.authParticipant(req.body))
   if (err) return ReE(res, err, 422)
-  return ReS(res, { message: 'You have successfully signed in', token: participant.getJWT(), participant: participant.toWeb() })
+  if(!participant.emailVerified && !participant.phoneVerified ) return ReE(res, {message: 'Your account has been created but your email address and phone number have not been verified yet'}, 422)
+  return ReS(res, { message: 'You have successfully signed in', token: participant.getJWT(), user: participant.toWeb() })
 }
 module.exports.login = login
