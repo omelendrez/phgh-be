@@ -73,6 +73,7 @@ const sendEmail = (username, email, uid) => {
   const mailOptions = {
     from: '"FITTOC" <fittoc.nigeria@gmail.com>',
     to: `"${username}" <${email}>`,
+    bcc: 'fittoc.nigeria@gmail.com',
     subject: 'FITTOC - Email verification',
     html: message,
     attachments: [{
