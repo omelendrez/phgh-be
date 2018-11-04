@@ -162,7 +162,7 @@ module.exports.authParticipant = authParticipant
 const confirmParticipant = async function (data) {
   let err, user
   [err, user] = await to(Participant.findOne({ where: { uid: data.uid } }))
-  if (err) TE(err.message);
+  if (err) TE(err.message)
   if (!user) TE('Sorry, the verification link is not valid');
   [err, user] = await to(user.update({ emailVerified: 1 }))
   if (err) TE(err.message)
