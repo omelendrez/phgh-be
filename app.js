@@ -40,7 +40,7 @@ app.use('/v1', v1)
 
 app.use('/', function (req, res) {
     res.statusCode = 422
-    res.json({ success: 'false', error: 'Endpoint not found', data: {} })
+    res.json({ success: false, error: 'Endpoint not found', data: {} })
 })
 
 // catch 404 and forward to error handler
