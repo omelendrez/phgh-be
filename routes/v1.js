@@ -45,7 +45,8 @@ router.delete('/holiday/:id', passport.authenticate('jwt', { session: false }), 
 
 router.get('/dash', passport.authenticate('jwt', { session: false }), HomeController.Dashboard)
 
-router.post('/participants/login', ParticipantController.login)
 router.post('/participants', ParticipantController.create)
+router.post('/participants/login', ParticipantController.login)
+router.post('/participants/confirm', ParticipantController.confirm)
 
 module.exports = router

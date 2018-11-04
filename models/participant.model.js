@@ -47,6 +47,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TINYINT,
       defaultValue: 0
     },
+    uid: {
+      type: DataTypes.STRING,
+      defaultValue: null
+    },
     phoneVerified: {
       type: DataTypes.TINYINT,
       defaultValue: 0
@@ -65,6 +69,11 @@ module.exports = (sequelize, DataTypes) => {
       if (err) TE(err.message, true)
 
       participant.password = hash
+
+      const UIDGenerator = require('uid-generator')
+      const uidgen = new UIDGenerator(UIDGenerator.BASE16)
+      const uid = await uidgen.generate()
+      participant.uid = uid
     }
   })
 

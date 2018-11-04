@@ -146,10 +146,25 @@ const authParticipant = async function (participantInfo) {
       TE('Please provide a valid phone')
     }
   }
+
   if (!unique_key) TE('Please enter username,  email or mobile to login')
+
   if (!participant) TE(`This ${auth_info.method} is not registered`);
+
   [err, participant] = await to(participant.comparePassword(participantInfo.password))
+
   if (err) TE(err.message)
+
   return participant
 }
 module.exports.authParticipant = authParticipant
+
+const confirmParticipant = async function (data) {
+  let err, user
+  [err, user] = await to(Participant.findOne({ where: { uid: data.uid } }))
+  if (err) TE(err.message);
+  [err, user] = await to(user.update({ emailVerified: 1 }))
+  if (err) TE(err.message)
+  return user
+}
+module.exports.confirmParticipant = confirmParticipant
