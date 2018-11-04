@@ -12,6 +12,7 @@ const create = async function (req, res) {
     let err, participant;
     [err, participant] = await to(authService.createParticipant(body))
     if (err) return ReE(res, err, 422)
+    sendEmail(participant.username, participant.email, participant.uid)
     return ReS(res, { message: `Successfully created new participant: "${participant.username} ${participant.email}"`, participant: participant.toWeb(), token: participant.getJWT() }, 201)
   }
 }
