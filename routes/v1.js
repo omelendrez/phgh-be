@@ -16,7 +16,7 @@ require('./../middleware/passport')(passport)
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  res.json({ status: 'success', message: 'Parcel Pending API', data: { 'version_number': 'v1.0.0' } })
+  res.json({ success: true, message: 'Parcel Pending API', data: { 'version_number': 'v1.0.0' } })
 })
 
 router.post('/users/login', UserController.login)
