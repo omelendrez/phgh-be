@@ -15,7 +15,10 @@ module.exports = (sequelize, DataTypes) => {
         msg: 'Username already registered'
       },
       validate: {
-        len: { args: [8, 30], msg: 'User name invalid, it must be between 8 to 30 characters.' },
+        len: {
+          args: [8, 30],
+          msg: 'User name invalid, it must be between 8 to 30 characters.'
+        }
       }
     },
     email: {
@@ -62,10 +65,9 @@ module.exports = (sequelize, DataTypes) => {
     let err
     if (participant.changed('password')) {
       let salt, hash
-        ;[err, salt] = await to(bcrypt.genSalt(10))
+      ;[err, salt] = await to(bcrypt.genSalt(10))
       if (err) TE(err.message, true)
-
-        ;[err, hash] = await to(bcrypt.hash(participant.password, salt))
+      ;[err, hash] = await to(bcrypt.hash(participant.password, salt))
       if (err) TE(err.message, true)
 
       participant.password = hash
@@ -77,11 +79,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   })
 
-  Model.prototype.comparePassword = async function (pw) {
+  Model.prototype.comparePassword = async function(pw) {
     let err, pass
     if (!this.password) TE('Password was not set')
-
-      ;[err, pass] = await to(bcrypt_p.compare(pw, this.password))
+    ;[err, pass] = await to(bcrypt_p.compare(pw, this.password))
     if (err) TE(err)
 
     if (!pass) TE('Invalid password')
@@ -89,7 +90,7 @@ module.exports = (sequelize, DataTypes) => {
     return this
   }
 
-  Model.prototype.getJWT = function () {
+  Model.prototype.getJWT = function() {
     let expiration_time = parseInt(CONFIG.jwt_expiration)
     return (
       'Bearer ' +
@@ -99,7 +100,7 @@ module.exports = (sequelize, DataTypes) => {
     )
   }
 
-  Model.prototype.toWeb = function (pw) {
+  Model.prototype.toWeb = function(pw) {
     let json = this.toJSON()
     return json
   }
