@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING
   })
 
-  Model.prototype.toWeb = function (pw) {
+  Model.prototype.toWeb = function(pw) {
     let json = this.toJSON()
     return json
   }

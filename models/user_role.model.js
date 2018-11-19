@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
     RoleId: DataTypes.INTEGER,
     UserId: DataTypes.INTEGER
   })
-  Model.prototype.toWeb = function (pw) {
+  Model.prototype.toWeb = function(pw) {
     let json = this.toJSON()
     return json
   }
