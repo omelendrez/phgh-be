@@ -67,11 +67,9 @@ const login = async function(req, res) {
   let err, participant, account
   ;[err, participant] = await to(authService.authParticipant(req.body))
   if (err) return ReE(res, err, 422)
-  console.log('participant.id', participant.id)
   ;[err, account] = await to(
     Account.findAll({ where: { participantId: participant.id } })
   )
-  console.log('account', account)
   if (err) return ReE(res, err, 404)
   if (!participant.emailVerified && !participant.phoneVerified) {
     sendEmail(participant.username, participant.email, participant.uid)

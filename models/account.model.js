@@ -28,6 +28,10 @@ module.exports = (sequelize, DataTypes) => {
         args: 'uniqueKey',
         msg: 'NUBAN already registered in our database'
       }
+    },
+    status: {
+      type: DataTypes.TINYINT,
+      defaultValue: 0
     }
   })
 

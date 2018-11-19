@@ -3,7 +3,6 @@ const { ReE, ReS } = require('../services/util.service')
 
 const create = async function (req, res) {
   const data = req.body
-  console.log(data)
   Holiday.create(data)
     .then(holiday => ReS(res, {
       message: 'Holiday successfully created',
