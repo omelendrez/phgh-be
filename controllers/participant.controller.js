@@ -79,7 +79,7 @@ const login = async (req, res) => {
     message = message.split('{{email}}').join(email)
     message = message.split('{{uid}}').join(uid)
 
-    sendEmail(message, subject, username, email, uid)
+    sendEmail(message, subject, username, email)
     return ReE(
       res,
       {
