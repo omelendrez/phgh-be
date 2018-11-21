@@ -16,8 +16,8 @@ module.exports = (sequelize, DataTypes) => {
       },
       validate: {
         len: {
-          args: [8, 30],
-          msg: 'User name invalid, it must be between 8 to 30 characters.'
+          args: [6, 30],
+          msg: 'User name invalid, it must be between 6 to 30 characters.'
         }
       }
     },

@@ -2,7 +2,7 @@ const authService = require('../services/auth.service')
 const { to, ReE, ReS } = require('../services/util.service')
 const { Participant, Account } = require('../models')
 
-const create = async function(req, res) {
+const create = async (req, res) => {
   const body = req.body
   if (!body.unique_key && !body.email && !body.phone) {
     return ReE(
@@ -47,7 +47,7 @@ const getAll = (req, res) => {
 }
 module.exports.getAll = getAll
 
-const remove = async function(req, res) {
+const remove = async (req, res) => {
   Participant.findOne({ where: { id: req.params.id } })
     .then(participant =>
       participant.destroy().then(participant => {
@@ -63,7 +63,7 @@ const remove = async function(req, res) {
 }
 module.exports.remove = remove
 
-const login = async function(req, res) {
+const login = async (req, res) => {
   let err, participant, account
   ;[err, participant] = await to(authService.authParticipant(req.body))
   if (err) return ReE(res, err, 422)
@@ -71,8 +71,15 @@ const login = async function(req, res) {
     Account.findAll({ where: { participantId: participant.id } })
   )
   if (err) return ReE(res, err, 404)
+  const { username, email, uid } = participant
   if (!participant.emailVerified && !participant.phoneVerified) {
-    sendEmail(participant.username, participant.email, participant.uid)
+    const subject = 'FITTOC - Email verification'
+    let message = require('./../templates/templates.json').confirmEmail
+    message = message.split('{{username}}').join(username)
+    message = message.split('{{email}}').join(email)
+    message = message.split('{{uid}}').join(uid)
+
+    sendEmail(message, subject, username, email)
     return ReE(
       res,
       {
@@ -91,16 +98,12 @@ const login = async function(req, res) {
 }
 module.exports.login = login
 
-const sendEmail = (username, email, uid) => {
+const sendEmail = (message, subject, username, email) => {
   const nodemailer = require('nodemailer')
-  let message = require('./../templates/templates.json').confirmEmail
-  message = message.split('{{username}}').join(username)
-  message = message.split('{{email}}').join(email)
-  message = message.split('{{uid}}').join(uid)
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'fittoc.nigeria@gmail.com',
+      user: 'fittoc.nigeria',
       pass: 'P5d6eyrk*%HS'
     }
   })
@@ -108,7 +111,7 @@ const sendEmail = (username, email, uid) => {
     from: '"FITTOC" <fittoc.nigeria@gmail.com>',
     to: `"${username}" <${email}>`,
     bcc: 'fittoc.nigeria@gmail.com',
-    subject: 'FITTOC - Email verification',
+    subject: subject,
     html: message,
     attachments: [
       {
@@ -119,7 +122,7 @@ const sendEmail = (username, email, uid) => {
     ]
   }
 
-  transporter.sendMail(mailOptions, function(error, info) {
+  transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       console.log(error)
     } else {
@@ -139,3 +142,22 @@ const confirm = async function(req, res) {
   })
 }
 module.exports.confirm = confirm
+
+const forgotPassword = async (req, res) => {
+  let err, participant
+  ;[err, participant] = await to(authService.getParticipantInfo(req.body))
+  if (err) return ReE(res, err, 422)
+
+  const { username, email, uid } = participant
+  const subject = 'FITTOC - Reset password'
+  let message = require('./../templates/templates.json').forgotPassword
+  message = message.split('{{username}}').join(username)
+  message = message.split('{{uid}}').join(uid)
+  sendEmail(message, subject, username, email)
+
+  return ReS(res, {
+    message: 'Please check your email inbox',
+    user: participant.toWeb()
+  })
+}
+module.exports.forgotPassword = forgotPassword

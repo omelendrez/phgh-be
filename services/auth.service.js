@@ -2,7 +2,7 @@ const { User, Participant } = require('../models')
 const validator = require('validator')
 const { to, TE } = require('../services/util.service')
 
-const getUniqueKeyFromBody = function(body) {
+const getUniqueKeyFromBody = body => {
   // this is so they can send in 3 options unique_key, email, or phone and it will work
   let unique_key = body.username
   if (typeof unique_key === 'undefined') {
@@ -83,7 +83,7 @@ const createParticipant = async participantInfo => {
 }
 module.exports.createParticipant = createParticipant
 
-const authUser = async function(userInfo) {
+const authUser = async userInfo => {
   let unique_key, err
   let auth_info = {}
   auth_info.status = 'login'
@@ -110,7 +110,7 @@ const authUser = async function(userInfo) {
 }
 module.exports.authUser = authUser
 
-const authParticipant = async function(participantInfo) {
+const authParticipant = async participantInfo => {
   let unique_key, err, participant
   let auth_info = {}
   auth_info.status = 'login'
@@ -121,7 +121,7 @@ const authParticipant = async function(participantInfo) {
     unique_key = participantInfo.username
     auth_info.method = 'username'
     if (validator.isAlphanumeric(unique_key)) {
-      [err, participant] = await to(
+      ;[err, participant] = await to(
         Participant.findOne({ where: { username: unique_key } })
       )
       if (err) TE(err.message)
@@ -134,7 +134,7 @@ const authParticipant = async function(participantInfo) {
     unique_key = participantInfo.email
     auth_info.method = 'email'
     if (validator.isEmail(unique_key)) {
-      [err, participant] = await to(
+      ;[err, participant] = await to(
         Participant.findOne({ where: { email: unique_key } })
       )
       if (err) TE(err.message)
@@ -147,7 +147,7 @@ const authParticipant = async function(participantInfo) {
     unique_key = participantInfo.phone
     auth_info.method = 'phone'
     if (validator.isMobilePhone(unique_key, 'any')) {
-      [err, participant] = await to(
+      ;[err, participant] = await to(
         Participant.findOne({ where: { phone: unique_key } })
       )
       if (err) TE(err.message)
@@ -169,7 +169,7 @@ const authParticipant = async function(participantInfo) {
 }
 module.exports.authParticipant = authParticipant
 
-const confirmParticipant = async function(data) {
+const confirmParticipant = async data => {
   let err, user
   ;[err, user] = await to(Participant.findOne({ where: { uid: data.uid } }))
   if (err) TE(err.message)
@@ -179,3 +179,54 @@ const confirmParticipant = async function(data) {
   return user
 }
 module.exports.confirmParticipant = confirmParticipant
+
+const getParticipantInfo = async participantInfo => {
+  let unique_key, err, participant
+  let auth_info = {}
+  auth_info.status = 'login'
+
+  if (participantInfo.username) {
+    unique_key = participantInfo.username
+    auth_info.method = 'username'
+    if (validator.isAlphanumeric(unique_key)) {
+      ;[err, participant] = await to(
+        Participant.findOne({ where: { username: unique_key } })
+      )
+      if (err) TE(err.message)
+    } else {
+      TE('Please provide a valid username')
+    }
+  }
+
+  if (participantInfo.email) {
+    unique_key = participantInfo.email
+    auth_info.method = 'email'
+    if (validator.isEmail(unique_key)) {
+      ;[err, participant] = await to(
+        Participant.findOne({ where: { email: unique_key } })
+      )
+      if (err) TE(err.message)
+    } else {
+      TE('Please provide a valid email')
+    }
+  }
+
+  if (participantInfo.phone) {
+    unique_key = participantInfo.phone
+    auth_info.method = 'phone'
+    if (validator.isMobilePhone(unique_key, 'any')) {
+      ;[err, participant] = await to(
+        Participant.findOne({ where: { phone: unique_key } })
+      )
+      if (err) TE(err.message)
+    } else {
+      TE('Please provide a valid phone')
+    }
+  }
+
+  if (!unique_key) TE('Please enter username,  email or mobile to login')
+
+  return participant
+}
+
+module.exports.getParticipantInfo = getParticipantInfo
