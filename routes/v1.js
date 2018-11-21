@@ -50,6 +50,7 @@ router.get('/dash', adminPassport.authenticate('jwt', { session: false }), HomeC
 
 router.post('/participants', ParticipantController.create)
 router.post('/participants/login', ParticipantController.login)
+router.post('/participants/forgot-password', ParticipantController.forgotPassword)
 router.post('/participants/confirm', ParticipantController.confirm)
 
 router.post('/account', participantPassport.authenticate('jwt', { session: false }), AccountController.create)
