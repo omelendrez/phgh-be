@@ -184,7 +184,7 @@ const resetPasswordParticipant = async data => {
   let err, user
   ;[err, user] = await to(Participant.findOne({ where: { uid: data.uid } }))
   if (err) TE(err.message)
-  if (!user) TE('Sorry, the reset password link is not valid')
+  if (!user) TE('Sorry, the reset link is not valid')
   ;[err, user] = await to(user.update({ password: data.password }))
   if (err) TE(err.message)
   return user

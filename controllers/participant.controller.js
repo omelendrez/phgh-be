@@ -173,4 +173,3 @@ const resetPassword = async function(req, res) {
   })
 }
 module.exports.resetPassword = resetPassword
-
