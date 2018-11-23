@@ -180,6 +180,17 @@ const confirmParticipant = async data => {
 }
 module.exports.confirmParticipant = confirmParticipant
 
+const resetPasswordParticipant = async data => {
+  let err, user
+  ;[err, user] = await to(Participant.findOne({ where: { uid: data.uid } }))
+  if (err) TE(err.message)
+  if (!user) TE('Sorry, the reset password link is not valid')
+  ;[err, user] = await to(user.update({ password: data.password }))
+  if (err) TE(err.message)
+  return user
+}
+module.exports.resetPasswordParticipant = resetPasswordParticipant
+
 const getParticipantInfo = async participantInfo => {
   let unique_key, err, participant
   let auth_info = {}

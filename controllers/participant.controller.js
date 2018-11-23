@@ -161,3 +161,16 @@ const forgotPassword = async (req, res) => {
   })
 }
 module.exports.forgotPassword = forgotPassword
+
+const resetPassword = async function(req, res) {
+  let err, participant
+  ;[err, participant] = await to(authService.resetPasswordParticipant(req.body))
+  if (err) return ReE(res, err, 422)
+  return ReS(res, {
+    message: 'You have successfully changed your password',
+    token: participant.getJWT(),
+    user: participant.toWeb()
+  })
+}
+module.exports.resetPassword = resetPassword
+
