@@ -40,3 +40,20 @@ const getAll = (req, res) => {
     .catch(err => ReE(res, err))
 }
 module.exports.getAll = getAll
+
+const remove = async function(req, res) {
+  Account.findOne({ where: { id: req.params.id } })
+    .then(account => account.destroy())
+    .then(account => {
+      ReS(
+        res,
+        {
+          message: `Account "${account.NUBAN}" deleted successfully`,
+          account: account.toWeb()
+        },
+        200
+      )
+    })
+    .catch(() => ReE(res, 'Error occured trying to delete account'))
+}
+module.exports.remove = remove

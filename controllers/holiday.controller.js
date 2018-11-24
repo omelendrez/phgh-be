@@ -30,7 +30,7 @@ const remove = async function (req, res) {
   Holiday.findOne({ where: { id: req.params.id } })
     .then(holiday => holiday.destroy())
     .then(holiday => {
-      ReS(res, { message: `Holiday "${holiday.title}" updated deleted`, holiday: holiday.toWeb() }, 200)
+      ReS(res, { message: `Holiday "${holiday.title}" deleted successfully`, holiday: holiday.toWeb() }, 200)
     })
     .catch(() => ReE(res, 'Error occured trying to delete holiday'))
 }
