@@ -56,5 +56,6 @@ router.post('/participants/reset-password', ParticipantController.resetPassword)
 
 router.post('/account', participantPassport.authenticate('jwt', { session: false }), AccountController.create)
 router.get('/account/:id', participantPassport.authenticate('jwt', { session: false }), AccountController.getAll)
+router.delete('/account/:id', participantPassport.authenticate('jwt', { session: false }), AccountController.remove)
 
 module.exports = router
