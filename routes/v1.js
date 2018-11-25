@@ -10,6 +10,7 @@ const HolidayController = require('../controllers/holiday.controller')
 
 const ParticipantController = require('../controllers/participant.controller')
 const AccountController = require('../controllers/account.controller')
+const BitcoinAccountController = require('../controllers/bitcoin_account.controller')
 
 const adminPassport = require('passport')
 const participantPassport = require('passport')
@@ -57,5 +58,9 @@ router.post('/participants/reset-password', ParticipantController.resetPassword)
 router.post('/account', participantPassport.authenticate('jwt', { session: false }), AccountController.create)
 router.get('/account/:id', participantPassport.authenticate('jwt', { session: false }), AccountController.getAll)
 router.delete('/account/:id', participantPassport.authenticate('jwt', { session: false }), AccountController.remove)
+
+router.post('/bitcoin-account', participantPassport.authenticate('jwt', { session: false }), BitcoinAccountController.create)
+router.get('/bitcoin-account/:id', participantPassport.authenticate('jwt', { session: false }), BitcoinAccountController.getAll)
+router.delete('/bitcoin-account/:id', participantPassport.authenticate('jwt', { session: false }), BitcoinAccountController.remove)
 
 module.exports = router
