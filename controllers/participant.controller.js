@@ -1,6 +1,6 @@
 const authService = require('../services/auth.service')
-const { to, ReE, ReS } = require('../services/util.service')
-const { Participant, Account } = require('../models')
+const { to, ReE, ReS, host } = require('../services/util.service')
+const { Participant } = require('../models')
 
 const create = async (req, res) => {
   const body = req.body
@@ -12,10 +12,22 @@ const create = async (req, res) => {
   } else if (!body.password) {
     return ReE(res, 'Please enter a password to register.')
   } else {
+
     let err, participant
+
     ;[err, participant] = await to(authService.createParticipant(body))
     if (err) return ReE(res, err, 422)
-    sendEmail(participant.username, participant.email, participant.uid)
+
+    const { username, email, uid } = participant
+    const subject = 'FITTOC - Email verification'
+
+    let message = require('./../templates/templates.json').confirmEmail
+    message = message.replace('{{username}}', username)
+    message = message.replace('{{email}}', email)
+    message = message.replace('{{uid}}', uid)
+    message = message.replace('{{host}}', host)
+    sendEmail(message, subject, username, email)
+
     return ReS(
       res,
       {
@@ -64,22 +76,21 @@ const remove = async (req, res) => {
 module.exports.remove = remove
 
 const login = async (req, res) => {
-  let err, participant, account
+  let err, participant
   ;[err, participant] = await to(authService.authParticipant(req.body))
   if (err) return ReE(res, err, 422)
-  ;[err, account] = await to(
-    Account.findAll({ where: { participantId: participant.id } })
-  )
-  if (err) return ReE(res, err, 404)
+  const referralLink = `${host}/#/signup/${participant.username.toLowerCase()}`
   const { username, email, uid } = participant
   if (!participant.emailVerified && !participant.phoneVerified) {
     const subject = 'FITTOC - Email verification'
     let message = require('./../templates/templates.json').confirmEmail
-    message = message.split('{{username}}').join(username)
-    message = message.split('{{email}}').join(email)
-    message = message.split('{{uid}}').join(uid)
+    message = message.replace('{{username}}', username)
+    message = message.replace('{{email}}', email)
+    message = message.replace('{{uid}}', uid)
+    message = message.replace('{{host}}', host)
 
     sendEmail(message, subject, username, email)
+
     return ReE(
       res,
       {
@@ -93,7 +104,7 @@ const login = async (req, res) => {
     message: 'You have successfully signed in',
     token: participant.getJWT(),
     user: participant.toWeb(),
-    accounts: account
+    referralLink
   })
 }
 module.exports.login = login
@@ -151,8 +162,9 @@ const forgotPassword = async (req, res) => {
   const { username, email, uid } = participant
   const subject = 'FITTOC - Reset password'
   let message = require('./../templates/templates.json').forgotPassword
-  message = message.split('{{username}}').join(username)
-  message = message.split('{{uid}}').join(uid)
+  message = message.replace('{{username}}', username)
+  message = message.replace('{{uid}}', uid)
+  message = message.replace('{{host}}', host)
   sendEmail(message, subject, username, email)
 
   return ReS(res, {

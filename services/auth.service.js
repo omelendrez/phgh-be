@@ -23,7 +23,7 @@ const createUser = async userInfo => {
   auth_info = {}
   auth_info.status = 'create'
   unique_key = getUniqueKeyFromBody(userInfo)
-  if (!unique_key) TE('An email or phone number was not entered.')
+  if (!unique_key) TE('An email or phone number was not entered')
   if (validator.isEmail(unique_key)) {
     auth_info.method = 'email'
     userInfo.email = unique_key
@@ -38,7 +38,7 @@ const createUser = async userInfo => {
     if (err) TE('User already exists with that phone number')
     return user
   } else {
-    TE('A valid email or phone number was not entered.')
+    TE('A valid email or phone number was not entered')
   }
 }
 module.exports.createUser = createUser
@@ -55,7 +55,7 @@ const createParticipant = async participantInfo => {
     if (err) TE(err.message)
     return participant
   } else {
-    TE('A valid username was not entered.')
+    TE('A valid username was not entered')
   }
 
   unique_key = participantInfo.email
@@ -65,7 +65,7 @@ const createParticipant = async participantInfo => {
     if (err) TE(err.message)
     return participant
   } else {
-    TE('A valid email was not entered.')
+    TE('A valid email was not entered')
   }
 
   unique_key = participantInfo.phone
@@ -76,10 +76,10 @@ const createParticipant = async participantInfo => {
     if (err) TE('Participant already exists with that phone number')
     return participant
   } else {
-    TE('A valid phone number was not entered.')
+    TE('A valid phone number was not entered')
   }
 
-  if (!unique_key) TE('A username, email or mobile was not entered.')
+  if (!unique_key) TE('A username, email or mobile was not entered')
 }
 module.exports.createParticipant = createParticipant
 
