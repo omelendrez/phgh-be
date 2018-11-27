@@ -79,7 +79,7 @@ const login = async (req, res) => {
   let err, participant
   ;[err, participant] = await to(authService.authParticipant(req.body))
   if (err) return ReE(res, err, 422)
-  const referralLink = `${host}/#/signup/${participant.username.toLowerCase()}`
+  const referralLink = `${host}/#/referral/${participant.username}`
   const { username, email, uid } = participant
   if (!participant.emailVerified && !participant.phoneVerified) {
     const subject = 'FITTOC - Email verification'
