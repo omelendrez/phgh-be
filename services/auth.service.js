@@ -1,6 +1,14 @@
 const { User, Participant } = require('../models')
 const validator = require('validator')
 const { to, TE } = require('../services/util.service')
+const CONFIG = require('../config')
+const { em_user, em_password } = CONFIG
+
+const auth = {
+  user: em_user,
+  pass: em_password
+}
+module.exports.auth = auth
 
 const getUniqueKeyFromBody = body => {
   // this is so they can send in 3 options unique_key, email, or phone and it will work

@@ -12,9 +12,7 @@ const create = async (req, res) => {
   } else if (!body.password) {
     return ReE(res, 'Please enter a password to register.')
   } else {
-
     let err, participant
-
     ;[err, participant] = await to(authService.createParticipant(body))
     if (err) return ReE(res, err, 422)
 
@@ -113,10 +111,7 @@ const sendEmail = (message, subject, username, email) => {
   const nodemailer = require('nodemailer')
   const transporter = nodemailer.createTransport({
     service: 'gmail',
-    auth: {
-      user: 'fittoc.nigeria',
-      pass: 'P5d6eyrk*%HS'
-    }
+    auth: authService.auth
   })
   const mailOptions = {
     from: '"FITTOC" <fittoc.nigeria@gmail.com>',
